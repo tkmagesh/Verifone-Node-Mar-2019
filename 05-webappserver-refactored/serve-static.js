@@ -9,16 +9,25 @@ function isStatic(resource){
 }
 
 module.exports = function serveStatic(req, res){
-	var resourceName = req.url  === '/' ? 'index.html' : req.url;
-	if (isStatic(req.urlObj.pathname)){
-		var resourcePath = path.join(__dirname, req.urlObj.pathname);
+	var resourceName = req.url  === '/' ? 'index.html' : req.urlObj.pathname;
+	if (isStatic(resourceName)){
+		var resourcePath = path.join(__dirname, resourceName);
 		if (!fs.existsSync(resourcePath)){
+			console.log('[@serve-static] - serving 404');
 			res.statusCode = 404;
 			res.end();
 			return;
 		}
 
+
 		var stream = fs.createReadStream(resourcePath);
-		stream.pipe(res);
+		//stream.pipe(res);
+		stream.on('data', function(chunk){
+			res.write(chunk);
+		});
+
+		stream.on('end', function(){
+			res.end();
+		});
 	}
 };
