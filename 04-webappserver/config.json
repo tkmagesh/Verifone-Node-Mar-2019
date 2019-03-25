@@ -1,0 +1,5 @@
+{
+	"staticExtns" : [
+		".html", ".css", ".js", ".jpg", ".png", ".xml", ".json", ".txt", ".ico"
+	]
+}

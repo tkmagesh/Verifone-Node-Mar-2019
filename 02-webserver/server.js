@@ -6,9 +6,10 @@ var http = require('http'),
 
 var server = http.createServer(function(req /* IncomingMessage */, res /* ServerResponse */){
 	var resourceName = req.url  === '/' ? 'index.html' : req.url,
-		resourcePath = path.join(__dirname, resourceName);
+		urlObj = url.parse(resourceName),
+		resourcePath = path.join(__dirname, urlObj.pathname);
 
-	console.log(req.method + '\t' + resourceName);
+	console.log(req.method + '\t' + urlObj.pathname);
 	if (!fs.existsSync(resourcePath)){
 		res.statusCode = 404;
 		res.end();
@@ -16,7 +17,17 @@ var server = http.createServer(function(req /* IncomingMessage */, res /* Server
 	}
 
 	var stream = fs.createReadStream(resourcePath);
-	stream.pipe(res);
+	
+	//stream.pipe(res);
+
+	/* open, data, end, close, error */
+	stream.on('data', function(chunk){
+		res.write(chunk);
+	});
+
+	stream.on('end', function(){
+		res.end();
+	});
 });
 
 server.listen(8080);
