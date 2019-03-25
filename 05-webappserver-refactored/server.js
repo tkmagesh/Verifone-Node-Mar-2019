@@ -1,20 +1,27 @@
-var http = require('http');
+var http = require('http'),
+	path = require('path');
 
 var dataParser = require('./data-parser'),
 	serveStatic = require('./serve-static'),
 	serveCalculator = require('./serve-calculator'),
-	notFoundHandler = require('./not-found-handler');
+	notFoundHandler = require('./not-found-handler'),
+	logger = require('./logger'),
+	app = require('./app');
 
-var server = http.createServer(function (req , res){
-	dataParser(req);
-	console.log(req.method + '\t' + req.urlObj.pathname);
-	serveStatic(req, res);
-	serveCalculator(req, res);
-	notFoundHandler(res);
-});
+app.use(dataParser);
+app.use(logger);
+app.use(serveStatic(path.join(__dirname, 'public'))); 
+app.use(serveCalculator); 
+app.use(notFoundHandler);
+
+var server = http.createServer(app);
 
 server.listen(8080);
 
 server.on('listening', function(){
 	console.log('webapp server listening on 8080')	
 });
+
+router.get('/', function(req, res, next){
+	
+})
