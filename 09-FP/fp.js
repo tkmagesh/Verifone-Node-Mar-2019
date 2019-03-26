@@ -12,6 +12,13 @@ function describe(title, fn){
 	console.groupEnd();
 }
 
+function printGroup(groupedObj){
+	for(var key in groupedObj){
+		describe('Key - ['  + key + ']', function(){
+			console.table(groupedObj[key]);
+		});
+	}
+}
 
 describe('Default List', function(){
 	console.table(products);
@@ -64,16 +71,27 @@ describe('Sorting', function(){
 					}
 		}
 
-		describe('Products by value [ cost * units ]', function(){
-			var compareProductsByValue = function(p1, p2){
-				var p1Value = p1.cost * p1.units,
-					p2Value = p2.cost * p2.units;
-				if (p1Value < p2Value) return -1;
-				if (p1Value > p2Value) return 1;
-				return 0;
+		function getDescendingComparer(comparer){
+			return function(){
+				return comparer.apply(undefined, arguments) * -1;
 			}
+		}
 
+		var compareProductsByValue = function(p1, p2){
+			var p1Value = p1.cost * p1.units,
+				p2Value = p2.cost * p2.units;
+			if (p1Value < p2Value) return -1;
+			if (p1Value > p2Value) return 1;
+			return 0;
+		};
+		describe('Products by value [ cost * units ]', function(){
 			sort(products, compareProductsByValue);
+			console.table(products);
+		});
+
+		describe('Products by value [ cost * units ] [Descending]', function(){
+			var compareProductsByValueInDescending = getDescendingComparer(compareProductsByValue)
+			sort(products, compareProductsByValueInDescending);
 			console.table(products);
 		});
 	})
@@ -150,3 +168,33 @@ describe('Filtering', function(){
 		});
 	});
 });
+
+describe('GroupBy', function(){
+	function groupBy(list, keySelector){
+		var result = {};
+		for(var index = 0, count = list.length; index < count; index++){
+			var key = keySelector(list[index]);
+			/*if (typeof result[key] === 'undefined')
+				result[key] = [];*/
+			result[key] = result[key] || [];
+			result[key].push(list[index]);
+		}
+		return result;
+	}
+
+	describe('Products by category', function(){
+		var categoryKeySelector = function(product){
+			return product.category;
+		};
+		var productsByCategory = groupBy(products, categoryKeySelector);
+		printGroup(productsByCategory);
+	});
+
+	describe('products by cost', function(){
+		var costKeySelector = function(product){
+			return product.cost > 50 ? 'costly' : 'affordable';
+		};
+		var productsByCost = groupBy(products, costKeySelector);
+		printGroup(productsByCost);
+	});
+})
