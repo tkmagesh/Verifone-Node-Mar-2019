@@ -87,3 +87,6 @@ var isOddOrEven = memoize(function checkOddOrEven(n){
     return n % 2 === 0 ? 'even' : 'odd';
 });
 
+
+
+
