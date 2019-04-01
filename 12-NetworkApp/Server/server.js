@@ -21,7 +21,7 @@ var server = net.createServer(function(connection){
         type : "watching",
         filename : file
     };
-    connection.write(JSON.stringify(output));
+    connection.write(JSON.stringify(output) + '\n');
     fs.watchFile(file, function(){
         var output = {
             type : "change",
@@ -29,8 +29,14 @@ var server = net.createServer(function(connection){
             timestamp : new Date()
         }
 
-        var outputAsString = JSON.stringify(output);
-        connection.write(outputAsString);
+        var outputAsString = JSON.stringify(output) + '\n';
+        var firstHalfMessage = outputAsString.substr(0,20);
+        connection.write(firstHalfMessage);
+        var restOfTheMessage = outputAsString.substr(20, outputAsString.length);
+        setTimeout(function(){
+            connection.write(restOfTheMessage);
+        },5000);
+        //connection.write(outputAsString);
     });
 });
 
