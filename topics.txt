@@ -1,0 +1,38 @@
+design patterns
+	pub sub
+
+async programming
+	events
+	promises
+	async await
+	generators
+	observables
+		(hot & cold)
+
+typescript
+	generics
+	interfaces
+	decorators
+
+ES6
+	proxy
+	symbol
+	meta programming
+
+node
+	tcp socket
+	websocket
+	buffers
+	rest (rest client)
+
+mongo
+	introduction
+	mongo best practices
+
+
+CRUD
+	Angular
+	Node
+	MongoDB
+
+
