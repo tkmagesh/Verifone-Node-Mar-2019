@@ -3,8 +3,8 @@ function add(x,y){
 	console.log(`processing ${x} and ${y}`);
 	var p = new Promise(function(resolveFn, rejectFn){
 		setTimeout(function(){
-			if (args.length !== 2)
-				rejectFn(new Error('Invalid argument error'));
+			if (!args[0] || !args[1])
+				return rejectFn(new Error('Invalid argument error'));
             var result = x + y;
             console.log(`returning the result`);
             resolveFn(result);
