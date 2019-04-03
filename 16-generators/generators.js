@@ -21,7 +21,6 @@ function* filter(gen, predicate){
 }
 
 function* map(gen, transform){
-
 	for(let item of gen){
 		console.log('map ', item.id);
 		yield transform(item);
@@ -32,12 +31,16 @@ function* first(gen, count){
 	var counter = 0;
 	for(let item of gen){
 		console.log('first ', item.id);
-		if (++counter <= count) {
-			yield item;
-        }
-		return item;
+		++counter;
+		yield item;
+		if (counter >= count)
+			return;
     }		
 }
 
 var processedList = 
 	first(map(filter(products, p => p.category === 'grocery'), p => ({...p, value : p.cost * p.units})), 2)
+
+for(let p of processedList)
+    console.log(p.name)
+

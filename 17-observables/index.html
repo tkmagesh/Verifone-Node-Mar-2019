@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Observables</title>
+	<script src="rxjs.umd.js"></script>
+	<script>
+		(function(){
+			window.addEventListener('DOMContentLoaded', init);
+			var counter = 0
+			document.addEventListener('click', function(){
+				console.log('clicked - ', ++counter);
+			})
+			function init(){
+				const clicks = rxjs.fromEvent(document, 'click');
+				const result = clicks.pipe(rxjs.operators.debounce(() => rxjs.interval(1000)));
+				result.subscribe(x => console.log('1 second elapsed'));
+			}
+		})();
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
